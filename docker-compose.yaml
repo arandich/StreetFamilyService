@@ -1,0 +1,55 @@
+version: "3.8"
+services:
+  reverse-proxy:
+    # The official v2 Traefik docker image
+    image: traefik:v2.2
+    # Enables the web UI and tells Traefik to listen to docker
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker"
+      - "--providers.docker.exposedByDefault=false"
+    ports:
+      # The HTTP port
+      - "80:80"
+      # The Web UI (enabled by --api.insecure=true)
+      - "8080:8080"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+  api_app:
+    build:
+      context: ./api_app
+      target: builder
+    image: api_app
+    expose:
+      - "8080"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.account.rule=Host(`street.test`) && PathPrefix(`/api/`)"
+    environment:
+      - ENV=dev
+    volumes:
+      - ./api_app:/go/src/app
+    # have to use $$ (double-dollar) so docker doesn't try to substitute a variable
+    command: reflex -r '\.go$$' -s -- sh -c 'go run ./'
+    env_file: .env.dev
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      - POSTGRES_DB=golang_postgres
+    ports:
+      - '6500:5432'
+    volumes:
+      - progresDB:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin -d golang_postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    env_file:
+      - .env.dev
+volumes:
+  progresDB:
