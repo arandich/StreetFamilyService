@@ -14,17 +14,13 @@ build:
     web: ./api_app
     target: builder
     image: api_app
-    expose:
-      - "8080"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.account.rule=Host(`street.test`) && PathPrefix(`/api/`)"
-    environment:
-      - ENV=dev
-    volumes:
-      - ./api_app:/go/src/app
+    expose: "8080"
+    labels: "traefik.enable=true", "traefik.http.routers.account.rule=Host(`street.test`) && PathPrefix(`/api/`)"
+    environment: ENV=dev
+    volumes: ./api_app:/go/src/app
     command: reflex -r '\.go$$' -s -- sh -c 'go run ./'
     env_file: .env.dev
+release:
   postgres:
     image: postgres:latest
     container_name: postgres
