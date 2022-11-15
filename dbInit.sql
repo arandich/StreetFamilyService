@@ -43,5 +43,5 @@ CREATE TABLE public.catalog_shop_name
 -- INSERT INTO public.city (city_name, city_coordinate) values ('МСК','53');
 -- INSERT INTO public.user (email,username,password,city_id) values ('emaiasd@email.ru','useasdser','dsadasd',1);
 INSERT INTO public.shop (shop_name, city_coordinate, shop_phone) values ('Bylka','24241','81239213');
-
+INSERT INTO public.shop (shop_name, city_coordinate, shop_phone) values ('bylyka','24232141','812319213');
 COMMIT;
