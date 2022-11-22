@@ -9,3 +9,7 @@ type UserService interface {
 type CompanyService interface {
 	Post(ctx context.Context, id int32) (*CompanySearch, error)
 }
+
+type CatalogService interface {
+	Post(ctx context.Context, id int32) (*Catalog, error)
+}

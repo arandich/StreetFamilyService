@@ -15,7 +15,8 @@ func (h *Handler) CompaniesSearch(c *gin.Context) {
 	pgpool, err := storage.ConnectToPostgres(context.Background(), "postgres://admin:password123@postgres:5432/golang_postgres")
 	log.Println("Success connect to pool")
 	if err != nil {
-		log.Fatalln(err)
+		log.Panic(err)
+		return
 	}
 
 	log.Println("successfully connected to postgres")
@@ -27,11 +28,15 @@ func (h *Handler) CompaniesSearch(c *gin.Context) {
 		return
 	}
 
-	nameQuery := body.Name + "%"
+	var nameQuery string
+	if body.Name != "" {
+		nameQuery = body.Name + "%"
+	}
 
 	rows, err := pgpool.Query(context.Background(), "SELECT * FROM shop WHERE shop_name LIKE  LOWER($1)", nameQuery)
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
+		return
 	}
 
 	var values []interface{}
@@ -42,7 +47,8 @@ func (h *Handler) CompaniesSearch(c *gin.Context) {
 
 		values, err = rows.Values()
 		if err != nil {
-			log.Println("error while irrerating dataset")
+			log.Panic("error while irrerating dataset")
+			return
 		}
 
 		resp.ID = values[0].(int32)
@@ -55,12 +61,12 @@ func (h *Handler) CompaniesSearch(c *gin.Context) {
 	if len(respAr) == 0 {
 		c.JSON(http.StatusBadRequest, "companies not found")
 		pgpool.Close()
+	} else {
+		c.JSON(http.StatusOK, respAr)
 	}
 
-	c.JSON(http.StatusOK, respAr)
-
 	if err := rows.Err(); err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
 }

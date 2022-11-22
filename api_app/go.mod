@@ -6,6 +6,7 @@ require (
 	github.com/gin-gonic/gin v1.8.1
 	github.com/jackc/pgx/v4 v4.17.2
 	github.com/pkg/errors v0.8.1
+	github.com/shopspring/decimal v1.2.0
 	golang.org/x/net v0.2.0
 )
 

@@ -11,6 +11,7 @@ type Handler struct {
 	UserService    model.UserService
 	DB             *pgxpool.Pool
 	CompanyService model.CompanyService
+	CatalogService model.CatalogService
 }
 
 // Config will hold services that will eventually be injected into this
@@ -19,6 +20,7 @@ type Config struct {
 	R              *gin.Engine
 	UserService    model.UserService
 	CompanyService model.CompanyService
+	CatalogService model.CatalogService
 }
 
 // NewHandler initializes the handler with required injected services along with http routes
@@ -28,6 +30,7 @@ func NewHandler(c *Config) {
 	h := &Handler{
 		UserService:    c.UserService,
 		CompanyService: c.CompanyService,
+		CatalogService: c.CatalogService,
 	} // currently has no properties
 
 	// Create an account group
@@ -35,4 +38,10 @@ func NewHandler(c *Config) {
 
 	g.POST("/login", h.Login)
 	g.POST("/companies", h.CompaniesSearch)
+	g.POST("/catalog", h.GetCatalog)
+	g.POST("/catalog/add", h.AddItem)
+	g.POST("/catalog/delete", h.DeleteItem)
+	g.POST("/catalog/find-by-id", h.FindItemById)
+	g.PUT("/catalog/update-by-id", h.UpdateItemById)
+
 }
