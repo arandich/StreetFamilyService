@@ -5,12 +5,18 @@ BEGIN;
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 -- TABLES --
-CREATE TABLE public.shop
+-- CREATE TABLE public.shop
+-- (
+--     "id" SERIAL PRIMARY KEY,
+--     "shop_name" varchar not null,
+--     "city_coordinate" varchar not null,
+--     "shop_phone" varchar not null
+-- );
+
+CREATE TABLE public.shop_name_category
 (
     "id" SERIAL PRIMARY KEY,
-    "shop_name" varchar not null,
-    "city_coordinate" varchar not null,
-    "shop_phone" varchar not null
+    "name" varchar not null
 );
 
 CREATE TABLE public.shop_name_catalog
@@ -24,13 +30,6 @@ CREATE TABLE public.shop_name_catalog
     "description" varchar not null,
     FOREIGN KEY (category_id) REFERENCES shop_name_category (id)
 );
-
-CREATE TABLE public.shop_name_category
-(
-    "id" SERIAL PRIMARY KEY,
-    "name" varchar not null
-);
-
 
 -- CREATE TABLE public.users
 -- (
